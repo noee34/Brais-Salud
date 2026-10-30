@@ -24,7 +24,7 @@ const MAP = {
       control_existencias: Boolean(r.stockEnabled), existencias_iniciales: r.stockInitial || 0, existencias_desde: r.stockSince,
       reserva_minima: r.minReserve || 0, umbrales: r.thresholds || [], dias_aviso: r.alertDays ?? 3,
       necesita_receta: Boolean(r.needsRx), estado_receta: r.rxStatus, estado_receta_desde: r.rxStatusAt,
-      ultima_reposicion: r.lastRestockDate || null, creado: r.createdAt, modificado: r.updatedAt,
+      ultima_reposicion: r.lastRestockDate || null, prospecto: r.leaflet || {}, creado: r.createdAt, modificado: r.updatedAt,
     }),
     from: (x) => ({
       id: x.id, name: x.nombre, form: x.presentacion, dose: num(x.cantidad_por_toma), unit: x.unidad, strength: x.concentracion || '',
@@ -34,7 +34,7 @@ const MAP = {
       stockEnabled: Boolean(x.control_existencias), stockInitial: num(x.existencias_iniciales), stockSince: num(x.existencias_desde),
       minReserve: num(x.reserva_minima), thresholds: (x.umbrales || []).map(Number), alertDays: num(x.dias_aviso),
       needsRx: Boolean(x.necesita_receta), rxStatus: x.estado_receta, rxStatusAt: num(x.estado_receta_desde),
-      lastRestockDate: date(x.ultima_reposicion), createdAt: num(x.creado), updatedAt: num(x.modificado),
+      lastRestockDate: date(x.ultima_reposicion), leaflet: x.prospecto || {}, createdAt: num(x.creado), updatedAt: num(x.modificado),
     }),
   },
   intakes: {

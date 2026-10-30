@@ -4,7 +4,7 @@ import { store } from './store.js';
 import { icons } from './art.js';
 import { openSheet, confirmDialog, toast, esc, $, $$ } from './ui.js';
 import { dayKey, combineLocal, toDateInput, toTimeInput, addDays } from './dates.js';
-import { FORMS, UNITS, REMINDERS, RX, qty, medTitle, validateMed, fmtNum } from './meds.js';
+import { FORMS, UNITS, REMINDERS, RX, qty, medTitle, validateMed, fmtNum, LEAFLET, LEAFLET_MAX, cimaUrl } from './meds.js';
 import { FREQUENCIES, DEFAULT_TIMES, intervalTimes, intervalHours } from './schedule.js';
 import { registerIntake, updateIntake, deleteIntake, registerRestock, infoFor, listedMeds, getMed, meds as allMeds, checkStockAlerts } from './model.js';
 import { account } from './account.js';
@@ -110,6 +110,12 @@ export function openMedForm({ med = null } = {}) {
 
         <div class="field"><div class="field-label"><span class="eyebrow">Observaciones</span></div>
           <textarea class="notes" name="notes" maxlength="500" placeholder="Ej. Tomar con comida (según indicación médica)">${esc(m.notes)}</textarea></div>
+
+        <div class="fieldset"><span class="eyebrow">Prospecto breve · opcional</span>
+          <p class="field-hint">Resume lo importante del prospecto de la caja o del oficial. <a class="link-btn" data-cima href="${esc(cimaUrl(m))}" target="_blank" rel="noopener" style="min-height:0;display:inline">Ver prospecto oficial (CIMA)</a></p>
+          ${LEAFLET.map(([k, label]) => `<div class="field"><div class="field-label"><span class="eyebrow">${label}</span></div>
+            <textarea class="notes" name="lf-${k}" maxlength="${LEAFLET_MAX}" rows="2">${esc(m.leaflet?.[k] || '')}</textarea></div>`).join('')}
+        </div>
         <div class="note-box">${icons.shield({ size: 18 })}<span>MEDICINA registra la pauta indicada por tu médico o farmacéutico. No recomienda dosis ni cambia tratamientos.</span></div>
         <p class="form-error" role="alert"></p>
         <div class="form-actions"><button type="submit" class="btn btn-primary btn-block">${med ? 'Guardar cambios' : 'Añadir medicamento'}</button></div>
@@ -164,6 +170,7 @@ export function openMedForm({ med = null } = {}) {
         if (t.name === 'unit') syncUnit();
         if (t.name === 'stockEnabled') syncStock();
       });
+      form.name.addEventListener('input', () => { const a = $('[data-cima]', body); if (a) a.href = cimaUrl({ name: form.name.value }); });
       body.addEventListener('input', (e) => {
         const t = e.target;
         if (t.dataset.time != null) times[Number(t.dataset.time)] = t.value;
@@ -195,6 +202,7 @@ export function openMedForm({ med = null } = {}) {
           startDate: form.startDate.value, endDate: form.endDate.value || '',
           reminder: form.reminder.value === '' ? null : Number(form.reminder.value),
           notes: form.notes.value.trim(),
+          leaflet: Object.fromEntries(LEAFLET.map(([k]) => [k, form[`lf-${k}`].value.trim()]).filter(([, v]) => v)),
           stockEnabled: form.stockEnabled.checked,
           minReserve: numVal(form.minReserve) || 0,
           alertDays: Math.max(0, Math.min(60, Math.round(numVal(form.alertDays) || 0))),

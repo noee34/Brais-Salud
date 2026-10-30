@@ -72,6 +72,19 @@ export const reminderLabel = (m) => (REMINDERS.find(([v]) => v === m) || REMINDE
 /** Nombre visible: "Paracetamol 1 g". */
 export const medTitle = (m) => [m.name, m.strength].filter(Boolean).join(' ');
 
+/** Apartados del prospecto breve (los escribe la persona, a partir del prospecto oficial). */
+export const LEAFLET = [
+  ['uso', 'Para qué sirve'],
+  ['modo', 'Cómo tomarlo'],
+  ['precauciones', 'Precauciones y contraindicaciones'],
+  ['efectos', 'Efectos adversos frecuentes'],
+  ['conservacion', 'Conservación'],
+];
+export const LEAFLET_MAX = 600;
+export const hasLeaflet = (m) => LEAFLET.some(([k]) => (m.leaflet?.[k] || '').trim());
+/** Búsqueda del prospecto oficial en CIMA (Agencia Española de Medicamentos). */
+export const cimaUrl = (m) => `https://cima.aemps.es/cima/publico/lista.html?nombre=${encodeURIComponent(m.name || '')}`;
+
 /** Validación del formulario de medicamento. Devuelve el primer error o ''. */
 export function validateMed(m) {
   if (!m.name || !m.name.trim()) return 'Escribe el nombre del medicamento.';
@@ -90,5 +103,6 @@ export function validateMed(m) {
     if (!(Number(m.minReserve) >= 0)) return 'La reserva mínima no puede ser negativa.';
     if ((m.thresholds || []).some((t) => !(Number(t) >= 0))) return 'Revisa los umbrales de aviso.';
   }
+  if (LEAFLET.some(([k]) => (m.leaflet?.[k] || '').length > LEAFLET_MAX)) return `Cada apartado del prospecto admite hasta ${LEAFLET_MAX} caracteres.`;
   return '';
 }

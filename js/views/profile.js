@@ -11,9 +11,10 @@ import { notifyPermission, requestNotifications, isStandalone, medsToICS } from 
 import { intakesToCSV, toBackup, parseBackup, mergeRecords, deliverFile } from '../data-io.js';
 import { activeMeds } from '../model.js';
 import { syncPill, syncState } from './common.js';
+import { avatarFromFile, avatarHTML } from '../photo.js';
 import { dayKey } from '../dates.js';
 
-export const APP_VERSION = '1.0.0';
+export const APP_VERSION = '1.1.0';
 
 function notifRow() {
   const p = notifyPermission();
@@ -30,6 +31,15 @@ export function renderProfile() {
   return `
   <header class="topbar"><h1 class="h-page">Perfil</h1><div class="topbar-end">${syncPill()}</div></header>
 
+  <div class="profile-head">
+    <label class="avatar-pick" aria-label="Cambiar foto de perfil">${avatarHTML({ photo: s.photo, name: s.displayName, email }, 96)}
+      <span class="avatar-edit">${icons.pencil({ size: 14 })}</span>
+      <input type="file" name="pf-photo" accept="image/*" hidden></label>
+    <div class="profile-name">${esc(s.displayName || (email ? email.split('@')[0] : 'Tu perfil'))}</div>
+    <div class="subtle">${email ? esc(email) : 'Modo local (sin cuenta)'}</div>
+    <div class="photo-actions"><label class="btn btn-soft btn-sm">${icons.upload({ size: 16 })} ${s.photo ? 'Cambiar foto' : 'Añadir foto'}<input type="file" name="pf-photo" accept="image/*" hidden></label>
+      ${s.photo ? '<button class="btn btn-ghost btn-sm" data-pf="photo-remove">Quitar</button>' : ''}</div>
+  </div>
   <div class="settings-group">
     <div class="settings-row"><span class="ico">${icons.user({ size: 18 })}</span><span class="grow">${email ? esc(email) : 'Modo local (sin cuenta)'}<br><span class="subtle">${email ? 'Correo de la cuenta' : 'Configura Supabase para tener cuenta y copia en la nube'}</span></span></div>
     <label class="settings-row"><span class="ico">${icons.note({ size: 18 })}</span><span class="grow">Nombre para el saludo</span><input type="text" name="pf-name" value="${esc(s.displayName || '')}" maxlength="30" placeholder="Opcional"></label>
@@ -158,6 +168,9 @@ export async function handleProfileEvent(e) {
       privacy: openPrivacy,
       logout: signOut,
       delete: deleteAccount,
+      'photo-remove': async () => {
+        if (await confirmDialog({ title: 'Quitar foto de perfil', message: 'Se quitará la foto en todos tus dispositivos.', confirmLabel: 'Quitar' })) { await store.updateSettings({ photo: '' }); toast('Foto quitada'); }
+      },
       'sync-now': () => { store.adapter?.retry?.(); toast('Sincronizando…'); },
       'notif-ask': async () => { const r = await requestNotifications(); toast(r === 'granted' ? 'Notificaciones activadas' : 'No se han permitido las notificaciones', { kind: r === 'granted' ? 'ok' : 'warn' }); store.emit(); },
       'ics-all': () => deliverFile(`MEDICINA-tomas-${dayKey()}.ics`, medsToICS(activeMeds()), 'text/calendar'),
@@ -173,6 +186,13 @@ export async function handleProfileEvent(e) {
     if (n === 'pf-name') { await store.updateSettings({ displayName: t.value.trim().slice(0, 30) }); toast('Guardado'); return true; }
     const nums = (v) => v.split(/[;,\s]+/).map((x) => Number(x.replace(',', '.'))).filter((x) => Number.isFinite(x) && x >= 0);
     const map = {
+      'pf-photo': async () => {
+        const f = t.files?.[0];
+        if (!f) return;
+        try { await store.updateSettings({ photo: await avatarFromFile(f) }); toast('Foto de perfil guardada'); }
+        catch (ex) { toast(ex.message, { kind: 'warn' }); }
+        t.value = '';
+      },
       'pf-remember': () => setRemember(t.checked),
       'pf-notify-doses': () => store.updateSettings({ notifyDoses: t.checked }),
       'pf-notify-stock': () => store.updateSettings({ notifyStock: t.checked }),
@@ -183,7 +203,7 @@ export async function handleProfileEvent(e) {
       'pf-days': () => store.updateSettings({ defaultAlertDays: Math.max(0, Math.min(60, Math.round(Number(t.value) || 0))) }),
       'pf-restore': () => t.files?.[0] && restore(t.files[0]).finally(() => { t.value = ''; }),
     };
-    if (map[n]) { await map[n](); if (n !== 'pf-restore' && n !== 'pf-remember') toast('Guardado'); return true; }
+    if (map[n]) { await map[n](); if (!['pf-restore', 'pf-remember', 'pf-photo'].includes(n)) toast('Guardado'); return true; }
   }
   return false;
 }

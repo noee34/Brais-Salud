@@ -10,6 +10,7 @@ import { daysLeftText, LEVEL_LABEL } from '../stock.js';
 import { activeMeds, intakes, upcoming, needingAttention, openAlerts } from '../model.js';
 import { account } from '../account.js';
 import { syncPill, offlineBar, intakeRow, emptyState, meter, rxPill } from './common.js';
+import { avatarHTML } from '../photo.js';
 
 function greeting(now = new Date()) {
   const h = now.getHours();
@@ -89,7 +90,7 @@ export function renderHome(state) {
   <div class="hero"><div class="hero-text">
     <h1 class="h-display">${greeting()}${name ? `, ${esc(name)}` : ''}</h1>
     <p class="date-line">${fmtLongDate(dayKey(now), { year: true })}</p></div>
-    ${scene('welcome', { width: 132 })}</div>
+    ${store.settings.photo ? `<a href="#perfil" class="hero-avatar" aria-label="Perfil">${avatarHTML({ photo: store.settings.photo }, 76)}</a>` : scene('welcome', { width: 132 })}</div>
   <div class="stats">
     <a class="stat" href="#medicamentos"><div class="num">${active.length}</div><div class="lbl">Medicamentos activos</div></a>
     <a class="stat" href="#calendario"><div class="num">${doneToday}</div><div class="lbl">Tomas realizadas hoy</div></a>

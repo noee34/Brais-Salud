@@ -70,10 +70,13 @@ create table if not exists public.medicamentos (
                          ('sin_receta', 'pendiente_solicitar', 'solicitada', 'disponible', 'pendiente_compra', 'repuesto')),
   estado_receta_desde  bigint not null,
   ultima_reposicion    date,
+  prospecto            jsonb not null default '{}'::jsonb,           -- prospecto breve escrito por la persona
   creado               bigint not null,
   modificado           bigint not null
 );
 create index if not exists medicamentos_usuario on public.medicamentos (usuario_id);
+-- Para proyectos creados con una versión anterior de este archivo:
+alter table public.medicamentos add column if not exists prospecto jsonb not null default '{}'::jsonb;
 
 
 -- Tomas (historial) --------------------------------------------------------------

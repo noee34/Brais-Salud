@@ -4,7 +4,7 @@ import { store } from '../store.js';
 import { icons, scene } from '../art.js';
 import { esc, openSheet, $ } from '../ui.js';
 import { dayKey, toTimeInput, fmtLongDate, addDays, parseDayKey } from '../dates.js';
-import { qty, medTitle, FORMS, STATUS, RX, reminderLabel, fmtNum } from '../meds.js';
+import { qty, medTitle, FORMS, STATUS, RX, reminderLabel, fmtNum, LEAFLET, hasLeaflet, cimaUrl } from '../meds.js';
 import { scheduleText, countdownText, durationText } from '../schedule.js';
 import { daysLeftText, LEVEL_LABEL, restocksOf, runOutDate } from '../stock.js';
 import { listedMeds, infoFor, nextFor, intakes, restocks, meds as allMeds, setRxStatus } from '../model.js';
@@ -105,6 +105,16 @@ export function medDetailHTML(med) {
       </div>
       <p class="field-hint">Calculado con el recuento del ${new Date(med.stockSince).toLocaleDateString('es-ES')} (${esc(qty(med.stockInitial, med.unit))}), ${esc(qty(info.added, med.unit))} repuestos y ${esc(qty(info.used, med.unit))} tomados desde entonces.</p>
     </div>` : `<div class="card"><p class="subtle" style="margin:0">Este medicamento no lleva control de existencias. Puedes activarlo en Editar.</p></div>`}
+    </section>
+
+    <section class="section" style="margin-top:22px"><div class="section-head"><h3 class="h-section">Prospecto</h3>${hasLeaflet(med) ? `<button class="link-btn" data-edit-med="${med.id}">Editar</button>` : ''}</div>
+      <div class="card leaflet">
+        ${hasLeaflet(med) ? LEAFLET.filter(([k]) => (med.leaflet?.[k] || '').trim()).map(([k, label]) => `<div class="leaflet-item"><span class="fact-label">${label}</span><p>${esc(med.leaflet[k])}</p></div>`).join('')
+          : `<p class="subtle" style="margin:0 0 6px">Aún no has anotado el prospecto. Puedes resumir lo importante (para qué sirve, cómo tomarlo, precauciones…) para tenerlo siempre a mano.</p>
+             <button class="btn btn-soft btn-sm" data-edit-med="${med.id}">${icons.pencil({ size: 16 })} Anotar prospecto</button>`}
+        <a class="link-btn" href="${esc(cimaUrl(med))}" target="_blank" rel="noopener">${icons.note({ size: 16 })} Prospecto oficial en CIMA (AEMPS)</a>
+      </div>
+      <p class="field-hint">Resumen escrito por ti a partir del prospecto. Ante cualquier duda, consulta a tu médico o farmacéutico.</p>
     </section>
 
     ${reps.length ? `<section class="section" style="margin-top:22px"><div class="section-head"><h3 class="h-section">Historial de reposiciones</h3></div>

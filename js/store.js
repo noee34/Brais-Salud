@@ -10,6 +10,7 @@ export const TYPES = ['meds', 'intakes', 'restocks', 'alerts'];
 
 export const DEFAULT_SETTINGS = {
   displayName: '',
+  photo: '',                 // foto de perfil (JPEG reducido, se sincroniza)
   toleranceMin: 30,          // margen antes de considerar una toma "retrasada"
   defaultReminder: 0,        // aviso de toma por defecto para medicamentos nuevos
   notifyDoses: true,         // avisos de toma con la app abierta

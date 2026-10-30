@@ -59,6 +59,9 @@ await wait(300);
 await shot('03-inicio');
 const before = (await st()).intakes.length;
 await page.click('.next [data-register]');
+await wait(400);
+// Si aún falta más de 1 h para la toma, la app pide confirmación (depende de la hora real).
+if (await page.locator('.dialog').count()) await page.click('.dialog [data-yes]');
 await page.waitForSelector('.toast:has-text("Toma registrada correctamente")');
 data = await st();
 assert.equal(data.intakes.length, before + 1);
@@ -124,7 +127,10 @@ await page.evaluate(async () => {
   await checkStockAlerts(); await checkStockAlerts();
 });
 data = await st();
-assert.equal(data.alerts.filter((a) => !a.silent).length, 1);
+{ // Tras el recuento solo un aviso "sonoro" para ese periodo, aunque se revise dos veces
+  const ibu = data.meds.find((x) => x.name === 'Ibuprofeno');
+  assert.equal(data.alerts.filter((a) => !a.silent && a.id.startsWith(`${ibu.id}:${ibu.stockSince}:`)).length, 1);
+}
 await page.goto(BASE + '#inicio');
 await wait(300);
 await shot('08-inicio-avisos');
