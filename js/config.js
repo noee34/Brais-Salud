@@ -8,5 +8,5 @@
 //
 // Si se dejan vacíos, MEDICINA funciona en modo local (sin cuenta ni nube),
 // útil solo para probarla.
-export const SUPABASE_URL = '';
-export const SUPABASE_ANON_KEY = '';
+export const SUPABASE_URL = 'https://fqtzxwpxxysmxdmsbsma.supabase.co';
+export const SUPABASE_ANON_KEY = 'sb_publishable_tiNrtYOYCqSEFz3N6O8BRA_Tpa22HHf';
