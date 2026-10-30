@@ -1,0 +1,11 @@
+{
+  "name": "medicina",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MEDICINA — control y gestión personal de medicamentos (PWA para iPhone)",
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "test": "TZ=UTC node --test tests/*.test.mjs && TZ=America/New_York node --test tests/*.test.mjs && TZ=Australia/Sydney node --test tests/*.test.mjs && TZ=Europe/Madrid node --test tests/*.test.mjs"
+  }
+}
