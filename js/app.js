@@ -297,7 +297,19 @@ function start() {
 
 function registerSW() {
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-    navigator.serviceWorker.register('./sw.js').catch((err) => console.warn('SW', err));
+    const hadController = Boolean(navigator.serviceWorker.controller);
+    navigator.serviceWorker.register('./sw.js').then((reg) => {
+      // Busca versiones nuevas cada vez que se vuelve a la app.
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) reg.update().catch(() => {}); });
+    }).catch((err) => console.warn('SW', err));
+    // Cuando llega una versión nueva de la app, se recarga sola (salvo con un formulario abierto).
+    let reloading = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!hadController || reloading) return;
+      const go = () => { if (reloading) return; reloading = true; location.reload(); };
+      if (!document.querySelector('.sheet-root, .dialog-root')) go();
+      else document.addEventListener('visibilitychange', () => { if (document.hidden) go(); }, { once: true });
+    });
   }
 }
 

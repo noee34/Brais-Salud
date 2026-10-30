@@ -1,6 +1,6 @@
 // Service worker: guarda la app en caché para abrirla y usarla sin conexión.
 // Los REGISTROS no pasan por aquí: viven en IndexedDB y en Supabase.
-const VERSION = 'medicina-v1.1.0';
+const VERSION = 'medicina-v1.1.1';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './css/styles.css',
   './js/app.js', './js/store.js', './js/sync.js', './js/remote-supabase.js', './js/config.js', './js/auth.js', './js/account.js',
