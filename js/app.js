@@ -21,6 +21,7 @@ import { renderHistory } from './views/history.js';
 import { renderCalendar } from './views/calendar.js';
 import { renderProfile, handleProfileEvent } from './views/profile.js';
 import { syncState } from './views/common.js';
+import { renderLibrary, runSearch, openLibraryItem, lib } from './views/library.js';
 
 const TABS = {
   inicio: { label: 'Inicio', icon: icons.home, render: renderHome },
@@ -30,7 +31,10 @@ const TABS = {
   perfil: { label: 'Perfil', icon: icons.user, render: renderProfile },
 };
 // Pantallas sin pestaña propia: se marcan bajo la pestaña indicada.
-const SUBVIEWS = { reposiciones: { parent: 'medicamentos', render: renderRestocks } };
+const SUBVIEWS = {
+  reposiciones: { parent: 'medicamentos', render: renderRestocks, label: 'Reposiciones' },
+  biblioteca: { parent: 'medicamentos', render: renderLibrary, label: 'Biblioteca' },
+};
 
 const ym = (key) => { const d = parseDayKey(key); return [d.getFullYear(), d.getMonth()]; };
 const today0 = dayKey();
@@ -58,7 +62,7 @@ function render() {
   // Mantener el foco y la posición si se está escribiendo en un campo de la vista.
   const focused = document.activeElement?.closest?.('#view') ? document.activeElement.name : null;
   view.innerHTML = r(state);
-  view.setAttribute('aria-label', TABS[state.view]?.label || 'Reposiciones');
+  view.setAttribute('aria-label', TABS[state.view]?.label || SUBVIEWS[state.view]?.label || '');
   if (focused) view.querySelector(`[name="${focused}"]`)?.focus({ preventScroll: true });
   renderTabbar();
 }
@@ -189,6 +193,14 @@ document.addEventListener('click', async (e) => {
   if (hm) { state.histMed = hm.dataset.historyMed; state.histPeriod = 'all'; closeMedDetail(); return; }
   const attend = t.closest('[data-attend]');
   if (attend) { const a = store.get('alerts', attend.dataset.attend); if (a) await attendAlert(a); return; }
+  const libItem = t.closest('[data-lib]');
+  if (libItem) {
+    const m = lib.results?.find((x) => x.nregistro === libItem.dataset.lib);
+    if (m) openLibraryItem(m, { onAdd: (prefill) => { location.hash = 'medicamentos'; openMedForm({ prefill }); } });
+    return;
+  }
+  const libSearch = t.closest('[data-lib-search]');
+  if (libSearch) { closeMedDetail(); location.hash = 'biblioteca'; runSearch(libSearch.dataset.libSearch, render); return; }
   const med = t.closest('[data-med]');
   if (med) return openMedDetail(med.dataset.med);
 
@@ -214,10 +226,20 @@ document.addEventListener('click', async (e) => {
   }
 });
 
+document.addEventListener('submit', (e) => {
+  const f = e.target.closest('[data-lib-form]');
+  if (!f) return;
+  e.preventDefault();
+  f.querySelector('input')?.blur();
+  runSearch(f.elements['lib-q'].value, render);
+});
+
 document.addEventListener('change', async (e) => {
   if (e.target.closest('.sheet-root:not([data-global]), .dialog-root')) return;
   const t = e.target;
   if (state.view === 'perfil' && !t.closest('.sheet-root') && await handleProfileEvent(e)) return;
+  if (t.name === 'lib-comerc') { lib.onlyMarketed = t.checked; if (lib.last) runSearch(lib.query, render); else render(); return; }
+  if (t.name === 'lib-q') { lib.query = t.value; return; }
   if (t.dataset.rxSelect) { const m = getMed(t.dataset.rxSelect); if (m) await setRxStatus(m, t.value); return; }
   const map = {
     'hist-med': () => { state.histMed = t.value; },

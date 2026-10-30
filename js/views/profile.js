@@ -14,7 +14,7 @@ import { syncPill, syncState } from './common.js';
 import { avatarFromFile, avatarHTML } from '../photo.js';
 import { dayKey } from '../dates.js';
 
-export const APP_VERSION = '1.1.1';
+export const APP_VERSION = '1.2.0';
 
 function notifRow() {
   const p = notifyPermission();

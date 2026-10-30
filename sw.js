@@ -1,11 +1,11 @@
 // Service worker: guarda la app en caché para abrirla y usarla sin conexión.
 // Los REGISTROS no pasan por aquí: viven en IndexedDB y en Supabase.
-const VERSION = 'medicina-v1.1.1';
+const VERSION = 'medicina-v1.2.0';
 const ASSETS = [
   './', './index.html', './manifest.webmanifest', './css/styles.css',
   './js/app.js', './js/store.js', './js/sync.js', './js/remote-supabase.js', './js/config.js', './js/auth.js', './js/account.js',
   './js/dates.js', './js/ui.js', './js/art.js', './js/theme.js', './js/meds.js', './js/schedule.js', './js/stock.js',
-  './js/model.js', './js/notify.js', './js/forms.js', './js/data-io.js', './js/pdf.js', './js/photo.js',
+  './js/model.js', './js/notify.js', './js/forms.js', './js/data-io.js', './js/pdf.js', './js/photo.js', './js/library.js', './js/views/library.js',
   './js/views/common.js', './js/views/home.js', './js/views/medicines.js', './js/views/history.js', './js/views/calendar.js', './js/views/profile.js',
   './js/vendor/supabase.js', './js/vendor/jspdf.umd.min.js', './js/vendor/jspdf.plugin.autotable.min.js',
   './fonts/dm-sans-latin-400-normal.woff2', './fonts/dm-sans-latin-500-normal.woff2', './fonts/dm-sans-latin-600-normal.woff2',

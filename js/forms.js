@@ -39,7 +39,7 @@ const numVal = (input) => Number(String(input?.value ?? '').replace(',', '.'));
 /* Medicamento                                                          */
 /* ================================================================== */
 
-export function openMedForm({ med = null } = {}) {
+export function openMedForm({ med = null, prefill = null } = {}) {
   const s = store.settings;
   const now = Date.now();
   const info = med ? infoFor(med) : null;
@@ -48,6 +48,7 @@ export function openMedForm({ med = null } = {}) {
     startDate: dayKey(), endDate: '', notes: '', reminder: s.defaultReminder ?? 0,
     stockEnabled: true, stockInitial: '', minReserve: s.defaultMinReserve ?? 5, thresholds: s.defaultThresholds || [10, 5, 2],
     alertDays: s.defaultAlertDays ?? 3, needsRx: false, rxStatus: 'sin_receta', lastRestockDate: '',
+    ...(prefill || {}),
   };
   let times = [...(m.times?.length ? m.times : ['08:00'])];
   const currentStock = info ? Math.max(0, info.stock) : m.stockInitial;

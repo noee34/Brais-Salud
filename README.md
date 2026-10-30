@@ -26,6 +26,7 @@ modo claro/oscuro/automático e ilustraciones originales en SVG.
 | **Historial** | Todas las tomas (también de medicamentos finalizados) · filtros por medicamento, estado, mes, año o fechas · corregir y eliminar con confirmación · **EXPORTAR INFORME PDF** |
 | **Calendario** | Mes a mes con navegación por meses y años · verde realizada, naranja pendiente/retrasada, gris omitida · detalle del día |
 | **Perfil** | Correo, contraseña, sesión, sincronización, notificaciones, umbrales por defecto, apariencia, PDF, CSV, copia y restauración, privacidad, cerrar sesión, eliminar cuenta |
+| **Biblioteca** (desde Medicamentos) | Busca cualquier medicamento autorizado en España (CIMA · AEMPS), con foto del envase, receta, laboratorio y **prospecto oficial por apartados** · *Añadir a mis medicamentos* rellena nombre, dosis, forma, receta y un resumen del prospecto |
 | **Reposiciones** (desde Inicio y Medicamentos) | Pocas existencias · necesitan receta · receta solicitada · pendientes de recoger o comprar · repuestos · botón **SOLICITAR RECETA** y estados manuales |
 
 ## Reglas que cumple
@@ -55,6 +56,8 @@ js/data-io.js                                  CSV, copia de seguridad y restaur
 js/views/*.js                                  Inicio, Medicamentos/Reposiciones, Historial, Calendario, Perfil
 js/art.js                                      Iconos, logotipo e ilustraciones originales (SVG)
 supabase/schema.sql                            Tablas en castellano + Row Level Security
+supabase/functions/cima/index.ts               Intermediario de solo lectura hacia CIMA (la AEMPS no permite consultas directas desde el navegador)
+js/library.js · js/views/library.js            Biblioteca de medicamentos y prospectos
 tests/                                         Lógica, sincronización, recorrido E2E y sin conexión
 ```
 

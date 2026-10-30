@@ -479,3 +479,24 @@ textarea.notes:focus { border-color: var(--teal); }
 .leaflet { display: flex; flex-direction: column; gap: 12px; }
 .leaflet-item p { margin: 3px 0 0; white-space: pre-line; overflow-wrap: anywhere; font-size: .92rem; }
 .leaflet .link-btn { min-height: 36px; }
+
+/* Biblioteca */
+.lib-search { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.lib-search .btn { min-height: 52px; padding: 0 18px; }
+.lib-search input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+.lib-thumb { width: 46px; height: 46px; border-radius: 12px; object-fit: cover; background: var(--surface-2); border: 1px solid var(--line); }
+.lib-row { grid-template-columns: 46px 1fr auto; }
+.lib-photo { display: block; width: 100%; max-height: 220px; object-fit: contain; border-radius: 18px; background: #fff; border: 1px solid var(--line); margin-bottom: 12px; }
+.spinner { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--teal-wash); border-top-color: var(--teal); margin: 6px auto 10px; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.leaflet-sec { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; margin-top: 10px; overflow: hidden; }
+.leaflet-sec summary { padding: 14px 16px; font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 10px; }
+.leaflet-sec summary::-webkit-details-marker { display: none; }
+.leaflet-sec summary::after { content: '+'; color: var(--accent-ink); font-weight: 600; }
+.leaflet-sec[open] summary::after { content: '−'; }
+.leaflet-body { padding: 0 16px 14px; font-size: .9rem; color: var(--ink-soft); line-height: 1.5; overflow-wrap: anywhere; }
+.leaflet-body p { margin: 6px 0; }
+.leaflet-body ul, .leaflet-body ol { padding-left: 20px; margin: 6px 0; }
+.leaflet-body h4, .leaflet-body h5 { color: var(--ink); margin: 12px 0 4px; font-size: .95rem; }
+.leaflet-body table { width: 100%; border-collapse: collapse; font-size: .82rem; display: block; overflow-x: auto; }
+.leaflet-body td, .leaflet-body th { border: 1px solid var(--line); padding: 4px 6px; vertical-align: top; }

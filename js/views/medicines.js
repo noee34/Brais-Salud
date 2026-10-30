@@ -46,6 +46,8 @@ export function renderMedicines(state) {
   return `
   <header class="topbar"><h1 class="h-page">Medicamentos</h1><div class="topbar-end">${syncPill()}<button class="icon-btn" data-action="add-med" aria-label="Añadir medicamento">${icons.plus()}</button></div></header>
   ${offlineBar()}
+  <a class="card" href="#biblioteca" style="display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;padding:14px 16px;margin-bottom:12px">
+    <span class="badge">${icons.book()}</span><span style="flex:1"><strong>Biblioteca de medicamentos</strong><br><span class="subtle">Busca cualquier medicamento y lee su prospecto oficial</span></span>${icons.right({ size: 18 })}</a>
   <a class="card" href="#reposiciones" style="display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;padding:14px 16px;margin-bottom:14px">
     <span class="badge blue">${icons.box()}</span><span style="flex:1"><strong>Existencias y reposiciones</strong><br><span class="subtle">Recetas, compras y lo que queda de cada medicamento</span></span>${icons.right({ size: 18 })}</a>
   <div class="chips scroll" role="group" aria-label="Filtrar" style="margin-bottom:14px">
@@ -112,7 +114,7 @@ export function medDetailHTML(med) {
         ${hasLeaflet(med) ? LEAFLET.filter(([k]) => (med.leaflet?.[k] || '').trim()).map(([k, label]) => `<div class="leaflet-item"><span class="fact-label">${label}</span><p>${esc(med.leaflet[k])}</p></div>`).join('')
           : `<p class="subtle" style="margin:0 0 6px">Aún no has anotado el prospecto. Puedes resumir lo importante (para qué sirve, cómo tomarlo, precauciones…) para tenerlo siempre a mano.</p>
              <button class="btn btn-soft btn-sm" data-edit-med="${med.id}">${icons.pencil({ size: 16 })} Anotar prospecto</button>`}
-        <a class="link-btn" href="${esc(cimaUrl(med))}" target="_blank" rel="noopener">${icons.note({ size: 16 })} Prospecto oficial en CIMA (AEMPS)</a>
+        <button class="link-btn" data-lib-search="${esc(med.name)}">${icons.book({ size: 16 })} Ver prospecto oficial en la Biblioteca</button>
       </div>
       <p class="field-hint">Resumen escrito por ti a partir del prospecto. Ante cualquier duda, consulta a tu médico o farmacéutico.</p>
     </section>

@@ -48,6 +48,8 @@ export const icons = {
   chart: (o) => svg('<path d="M4 20h16"/><rect x="5.5" y="11" width="3" height="6" rx="1"/><rect x="10.5" y="6" width="3" height="11" rx="1"/><rect x="15.5" y="9" width="3" height="8" rx="1"/>', o),
   cloud: (o) => svg('<path d="M7.5 18.5h9.2a4 4 0 0 0 .6-8 5.5 5.5 0 0 0-10.6 1.4 3.3 3.3 0 0 0 .8 6.6Z"/>', o),
   sliders: (o) => svg('<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>', o),
+  search: (o) => svg('<circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 4.5 4.5"/>', o),
+  book: (o) => svg('<path d="M5 4.5h9.5a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3Z"/><path d="M5 17a3 3 0 0 1 3-3h9.5M9 8.5h5"/>', o),
   cross: (o) => svg('<path d="M9.5 4h5v5.5H20v5h-5.5V20h-5v-5.5H4v-5h5.5Z"/>', o),
 };
 
